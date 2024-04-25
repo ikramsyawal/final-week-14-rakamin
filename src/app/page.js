@@ -1,8 +1,10 @@
-import BooksForm from './components/booksForm';
+import BooksForm from './components/BooksForm';
+import Navbar from './components/Navbar';
 
-export default function Home({ books }) {
+export default function Home() {
   return (
     <>
+      <Navbar />
       <BooksForm />
     </>
   );
