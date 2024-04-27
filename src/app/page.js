@@ -1,11 +1,22 @@
-import BooksForm from './components/BooksForm';
-import Navbar from './components/Navbar';
+import BooksTable from '../components/BooksTable';
+import Navbar from '../components/Navbar';
+import prisma from '../lib/prisma';
 
-export default function Home() {
+export const getBook = async () => {
+  try {
+    const response = await prisma.book.findMany();
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default async function Home() {
+  const books = await getBook();
   return (
     <>
       <Navbar />
-      <BooksForm />
+      <BooksTable books={books} />
     </>
   );
 }

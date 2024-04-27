@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/app/lib/prisma';
+import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
 export const POST = async (req, { params }) => {
   try {
@@ -14,9 +16,29 @@ export const POST = async (req, { params }) => {
       return NextResponse.json({ error: 'Invalid Credentials' });
     }
 
-    await bcrypt.compare(data.password, findUser.password);
+    const comparePassword = await bcrypt.compare(
+      data.password,
+      findUser.password,
+    );
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    if (!comparePassword) {
+      return NextResponse.json({ error: 'Invalid Credentials' });
+    } else {
+      const accessToken = jwt.sign(
+        {
+          id: findUser.id,
+          email: findUser.email,
+        },
+        process.env.SECRET_KEY,
+      );
+      cookies().set({
+        name: 'access_token',
+        value: accessToken,
+        maxAge: 60 * 60 * 24,
+      });
+    }
+
+    return NextResponse.json({ success: 'Login Success' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
