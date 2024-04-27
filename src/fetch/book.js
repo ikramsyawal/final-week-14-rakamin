@@ -33,11 +33,17 @@ export const deleteBook = async (id) => {
 
 export const updateBook = async (params) => {
   try {
+    const { year, pages, ...rest } = params;
+    const requestParams = {
+      ...rest,
+      year: Number(year),
+      pages: Number(pages),
+    };
     const response = await fetch(
       `http://localhost:3000/api/books/${params.id}`,
       {
         method: 'PUT',
-        body: JSON.stringify(params),
+        body: JSON.stringify(requestParams),
       },
     );
     return response;
@@ -54,5 +60,22 @@ export const getBooksById = async (id) => {
     return data;
   } catch (err) {
     throw new Error({ message: err.response.message });
+  }
+};
+
+export const uploadImage = async (params) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/books/uploads`, {
+      method: 'POST',
+      body: params,
+    });
+
+    const data = await response.json();
+    console.log(data, '<<<<<<<<');
+    return data;
+  } catch (err) {
+    throw new Error({
+      message: err.response.message || 'internal server error',
+    });
   }
 };

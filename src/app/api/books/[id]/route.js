@@ -18,6 +18,7 @@ export const GET = async (req, { params }) => {
 export const PUT = async (req, { params }) => {
   try {
     const data = await req.json();
+    console.log(data, '<<<<<data');
     await prisma.book.update({
       where: {
         id: +params.id,

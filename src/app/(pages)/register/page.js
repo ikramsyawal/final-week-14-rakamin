@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar';
 import { useState } from 'react';
 import { registerFetch } from '@/fetch/auth';
 import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -20,11 +22,14 @@ export default function Register() {
     console.log(name, email, password);
     await registerFetch({ name, email, password });
     router.refresh();
+    toast.success('Register Success');
+    router.push('/login');
   }
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
       <Navbar />
-      <div>
+      <div className="p-2">
         <form onSubmit={handleSubmit}>
           <label>
             Name:
@@ -63,7 +68,10 @@ export default function Register() {
             />
           </label>
           {password !== confirmPassword && <p>The password does not match</p>}
-          <button className="btn btn-primary">Register</button>
+          <button className="btn btn-primary w-full mt-2">Register</button>
+          <div className="mt-2 text-center">
+            <Link href="/login">Already have an account? login here</Link>
+          </div>
         </form>
       </div>
     </>

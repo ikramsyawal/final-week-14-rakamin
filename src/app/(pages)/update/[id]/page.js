@@ -3,16 +3,18 @@
 import { getBooksById } from '@/fetch/book';
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
+import { updateBook } from '@/fetch/book';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function UpdateDetail({ params }) {
   const id = params.id;
   const [data, setData] = useState({});
-  const [hasImage, setHasImage] = useState(false);
+  const router = useRouter();
 
   async function getData() {
     const response = await getBooksById(id);
     setData(response);
-    setHasImage(response.image ? true : false);
   }
 
   useEffect(() => {
@@ -20,10 +22,17 @@ export default function UpdateDetail({ params }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  async function handleUpdates() {
+    await updateBook({ id: id, ...data });
+    toast.success('Book Updated Successfully');
+    router.push('/');
+  }
+
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
       <Navbar />
-      <div>
+      <div className="p-2">
         <label>
           Title:
           <input
@@ -66,23 +75,11 @@ export default function UpdateDetail({ params }) {
             onChange={(e) => setData({ ...data, pages: e.target.value })}
           />
         </label>
-        <div>
-          {hasImage ? (
-            <button className="btn" onClick={() => setHasImage(false)}>
-              Delete image
-            </button>
-          ) : (
-            <label>
-              Image:
-              <input type="file" />
-            </label>
-          )}
-        </div>
-        <div>
+        <div className="">
           <button
             type="button"
-            className="btn"
-            onClick={() => console.log(data)}
+            className="btn btn-primary w-full mt-2"
+            onClick={handleUpdates}
           >
             Submit
           </button>

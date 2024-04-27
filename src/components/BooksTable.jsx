@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function BooksForm({ books }) {
   const [hasToken, setHasToken] = useState(false);
@@ -18,10 +19,12 @@ export default function BooksForm({ books }) {
   async function handleDelete(id) {
     await deleteBook(id);
     router.refresh();
+    toast.success('Book Deleted Success');
   }
 
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="overflow-x-auto">
         <table className="table-zebra table-lg w-full">
           <thead>
@@ -46,7 +49,9 @@ export default function BooksForm({ books }) {
                   <td>{book.publisher}</td>
                   <td>{book.year}</td>
                   <td>{book.pages}</td>
-                  <td>imagepath</td>
+                  <td>
+                    <a href="{book.image}">{book.image}</a>
+                  </td>
                   {hasToken && (
                     <td>
                       <button

@@ -13,7 +13,6 @@ export const GET = async (req, { params }) => {
 export const POST = async (req, { params }) => {
   try {
     const data = await req.json();
-    console.log(data);
     await prisma.book.create({ data });
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
